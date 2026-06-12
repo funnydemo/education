@@ -1,0 +1,38 @@
+# ModelScope SWIFT SFT training config.
+# Run with:
+#   python3 train_swift_sft.py --config swift_sft.yaml
+
+model: Qwen/Qwen2.5-0.5B-Instruct
+train_type: lora
+
+# Use Alpaca-style JSON/JSONL data with fields: instruction, input, output.
+# Existing scripts can generate compatible files, for example:
+#   python3 convert_gsm8k_to_alpaca_sft.py \
+#     --input /Users/yuzhian/Downloads/modelscope_gsm8k/train.jsonl \
+#     --output /Users/yuzhian/Downloads/modelscope_gsm8k/train_alpaca_sft.jsonl
+dataset:
+  - /Users/yuzhian/Downloads/modelscope_gsm8k/train_alpaca_sft.jsonl
+
+output_dir: output/swift_sft_qwen2_5_0_5b_lora
+
+num_train_epochs: 1
+max_length: 2048
+learning_rate: 0.0001
+warmup_ratio: 0.05
+
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 16
+
+torch_dtype: bfloat16
+lora_rank: 8
+lora_alpha: 32
+target_modules: all-linear
+
+logging_steps: 5
+save_steps: 100
+save_total_limit: 2
+save_only_model: true
+report_to: none
+
+dataloader_num_workers: 4
+dataset_num_proc: 4

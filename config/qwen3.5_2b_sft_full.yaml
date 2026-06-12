@@ -1,0 +1,47 @@
+model: /workspace/opensource_models/Qwen3.5-2B-Base
+torch_dtype: bfloat16
+attn_impl: flash_attn
+
+tuner_type: full
+freeze_vit: true
+freeze_aligner: true
+vit_gradient_checkpointing: false
+
+dataset:
+  - /workspace/data/train/train_data.jsonl
+load_from_cache_file: false
+dataset_num_proc: 48
+max_length: 8192
+max_pixels: 50176
+
+add_non_thinking_prefix: true
+loss_scale: ignore_empty_think
+group_by_length: true
+
+num_train_epochs: 2
+per_device_train_batch_size: 1
+per_device_eval_batch_size: 1
+gradient_accumulation_steps: 8
+gradient_checkpointing: true
+learning_rate: 5.0e-6
+lr_scheduler_type: cosine
+warmup_ratio: 0.03
+optim: adamw_torch
+adam_beta2: 0.95
+max_grad_norm: 1.0
+bf16: true
+
+deepspeed: zero2
+
+eval_strategy: steps
+eval_steps: 1000
+
+output_dir: /workspace/data/checkpoint
+logging_dir: /summary_dir
+logging_steps: 100
+save_steps: 1000
+save_total_limit: 3
+save_only_model: true
+report_to: none
+dataloader_num_workers: 8
+include_num_input_tokens_seen: true
